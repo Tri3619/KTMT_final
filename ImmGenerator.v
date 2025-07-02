@@ -1,7 +1,7 @@
 // Immediate Generator
 module ImmGenerator(
     input  [31:0] inst,
-    output [31:0] imm
+    output reg [31:0] imm
 );
     always @(*) begin
         case (inst[6:0])
