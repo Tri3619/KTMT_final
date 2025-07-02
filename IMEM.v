@@ -1,9 +1,9 @@
-// Instruction Memory
 module IMEM(
     input  [31:0] addr,
-    output [31:0] instruction,
-    output reg [31:0] memory [0:1023]  // Thêm output này
+    output [31:0] instruction
 );
+    reg [31:0] memory [0:1023];  // Khai báo bộ nhớ
+
     initial begin
         $readmemh("./mem/imem.hex", memory);
     end
