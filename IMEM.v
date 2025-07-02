@@ -1,13 +1,12 @@
 // Instruction Memory
 module IMEM(
     input  [31:0] addr,
-    output [31:0] instruction
+    output [31:0] instruction,
+    output reg [31:0] memory [0:1023]  // Thêm output này
 );
-    reg [31:0] memory [0:1023]; // 1KB memory
-
     initial begin
         $readmemh("./mem/imem.hex", memory);
     end
 
-    assign instruction = memory[addr[31:2]]; // Word-aligned access
+    assign instruction = memory[addr[31:2]];
 endmodule
