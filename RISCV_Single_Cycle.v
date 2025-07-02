@@ -46,10 +46,14 @@ module RISCV_Single_Cycle(
     assign PCBranch = PC + ImmExt;
     
     // Instruction Memory
-    IMEM imem(
+    // IMEM imem(
+    //     .addr(PC),
+    //     .instruction(Instruction),
+    //     .memory(imem_memory)
+    // );
+    IMEM IMEM_inst (  // Đổi tên thành IMEM_inst
         .addr(PC),
-        .instruction(Instruction),
-        .memory(imem_memory)
+        .instruction(Instruction)
     );
     
     // Register File
@@ -101,13 +105,20 @@ module RISCV_Single_Cycle(
     );
     
     // Data Memory
-    DMEM dmem(
+    // DMEM dmem(
+    //     .clk(clk),
+    //     .we(MemWrite),
+    //     .addr(ALUResult),
+    //     .wd(ReadData2),
+    //     .rd(ReadData),
+    //     .memory(dmem_memory)
+    // );
+        DMEM DMEM_inst (  // Đổi tên thành DMEM_inst
         .clk(clk),
         .we(MemWrite),
         .addr(ALUResult),
         .wd(ReadData2),
-        .rd(ReadData),
-        .memory(dmem_memory)
+        .rd(ReadData)
     );
     
     // Write-back MUX
