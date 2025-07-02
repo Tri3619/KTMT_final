@@ -27,7 +27,8 @@ module RISCV_Single_Cycle(
     wire [1:0]  ALUOp;
     wire [3:0]  ALUControl;
     wire        Zero;
-    
+    wire [31:0] imem_memory [0:1023];
+    wire [31:0] dmem_memory [0:1023];
     // Testbench signals
     reg  [31:0] Instruction_out_top;
     
@@ -47,7 +48,8 @@ module RISCV_Single_Cycle(
     // Instruction Memory
     IMEM imem(
         .addr(PC),
-        .instruction(Instruction)
+        .instruction(Instruction),
+        .memory(imem_memory)
     );
     
     // Register File
@@ -104,7 +106,8 @@ module RISCV_Single_Cycle(
         .we(MemWrite),
         .addr(ALUResult),
         .wd(ReadData2),
-        .rd(ReadData)
+        .rd(ReadData),
+        .memory(dmem_memory)
     );
     
     // Write-back MUX
