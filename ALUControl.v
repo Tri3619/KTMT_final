@@ -3,9 +3,8 @@ module ALUControl(
     input  [1:0] ALUOp,
     input  [2:0] funct3,
     input  [6:0] funct7,
-    output [3:0] ALUControl
+    output reg [3:0] ALUControl
 );
-    reg [3:0] ALUControl_reg;
     
     always @(*) begin
         case (ALUOp)
