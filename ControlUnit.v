@@ -1,13 +1,13 @@
 // Control Unit
 module ControlUnit(
     input  [6:0] opcode,
-    output       RegWrite,
-    output       ALUSrc,
-    output       MemWrite,
-    output       MemtoReg,
-    output       Branch,
-    output       Jump,
-    output [1:0] ALUOp
+    output reg       RegWrite,
+    output reg       ALUSrc,
+    output reg       MemWrite,
+    output reg       MemtoReg,
+    output reg       Branch,
+    output reg       Jump,
+    output reg [1:0] ALUOp
 );
     always @(*) begin
         case (opcode)
