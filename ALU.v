@@ -3,11 +3,9 @@ module ALU(
     input  [31:0] a,
     input  [31:0] b,
     input  [3:0]  ALUControl,
-    output [31:0] result,
-    output        zero
-);
-    reg [31:0] result_reg;
-    
+    output reg [31:0] result,  
+    output reg        zero
+); 
     always @(*) begin
         case (ALUControl)
             4'b0000: result_reg = a & b;      // AND
