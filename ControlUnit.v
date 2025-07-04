@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 module ControlUnit (
     input [6:0] opcode,
     input [2:0] funct3,
@@ -8,6 +9,18 @@ module ControlUnit (
     output reg Branch,
     output reg Jump,
     output reg [2:0] ALUControl
+=======
+// Control Unit
+module ControlUnit(
+    input  [6:0] opcode,
+    output reg       RegWrite,
+    output reg       ALUSrc,
+    output reg       MemWrite,
+    output reg       MemtoReg,
+    output reg       Branch,
+    output reg       Jump,
+    output reg [1:0] ALUOp
+>>>>>>> 3c902f98d32c2b187d33f5dbcd2306833dc21240
 );
     always @(*) begin
         // Default values
