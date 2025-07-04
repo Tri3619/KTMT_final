@@ -21,7 +21,10 @@ module ImmGenerator(
                 imm = {{12{inst[31]}}, inst[19:12], inst[20], inst[30:21], 1'b0};
             
             // U-type
-            7'b0110111, 7'b0010111: 
+            7'b0110111: // LUI
+                imm = {inst[31:12], 12'b0};
+            
+            7'b0010111: // AUIPC
                 imm = {inst[31:12], 12'b0};
             
             default: 

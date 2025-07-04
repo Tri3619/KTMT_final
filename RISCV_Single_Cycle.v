@@ -24,15 +24,17 @@ module RISCV_Single_Cycle(
     assign PC_out_top = PC;
     assign Instruction_out_top = Instruction;
     
-    // PC logic
+    // PC logic - QUAN TRỌNG: Sửa lại cho branch và jump
     assign PC = PC_reg;
     assign PC_next = (Branch & Zero) ? (PC + ImmExt) : 
                    Jump ? (PC + ImmExt) : 
                    (PC + 4);
     
     always @(posedge clk or negedge rst_n) begin
-        if (!rst_n) PC_reg <= 32'h0;
-        else PC_reg <= PC_next;
+        if (!rst_n) 
+            PC_reg <= 32'h0;
+        else 
+            PC_reg <= PC_next;
     end
     
     // IMEM

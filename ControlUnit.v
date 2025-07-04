@@ -59,7 +59,7 @@ module ControlUnit (
             // Branch (B-type)
             7'b1100011: begin
                 Branch = 1'b1;
-                ALUControl = 3'b001; // SUB
+                ALUControl = 3'b001; // SUB (cho so sánh)
             end
             
             // JAL (J-type)

@@ -16,5 +16,5 @@ module ALU (
         endcase
     end
     
-    assign zero = (result == 0);
+    assign zero = (result == 0);  // Zero flag cho branch
 endmodule
