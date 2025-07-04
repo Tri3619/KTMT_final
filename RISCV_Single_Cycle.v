@@ -2,13 +2,12 @@ module RISCV_Single_Cycle(
     input clk,
     input rst_n
 );
-    // Outputs for testbench
+    // Testbench outputs
     output [31:0] PC_out_top;
     output [31:0] Instruction_out_top;
     
     // Internal signals
-    reg [31:0] PC_reg;
-    wire [31:0] PC;
+    reg [31:0] PC;
     wire [31:0] PC_next;
     wire [31:0] Instruction;
     wire [31:0] ReadData1, ReadData2;
@@ -20,30 +19,27 @@ module RISCV_Single_Cycle(
     wire [2:0] ALUControl;
     wire Zero;
     wire PCSrc;
-    
+
     // Assign outputs
     assign PC_out_top = PC;
     assign Instruction_out_top = Instruction;
     
-    // PC logic
-    assign PC = PC_reg;
+    // PC logic - Critical for sc1/sc2
     assign PCSrc = Branch & Zero;
     assign PC_next = (PCSrc | Jump) ? (PC + ImmExt) : (PC + 4);
     
     always @(posedge clk or negedge rst_n) begin
-        if (!rst_n) 
-            PC_reg <= 32'h0;
-        else 
-            PC_reg <= PC_next;
+        if (!rst_n) PC <= 32'h0;
+        else PC <= PC_next;
     end
     
-    // IMEM
+    // IMEM - Must initialize to 'x' for sc1
     IMEM IMEM_inst (
         .address(PC),
         .instruction(Instruction)
     );
     
-    // Register File
+    // Register File - x0 must be zero
     RegisterFile Reg_inst (
         .clk(clk),
         .rst_n(rst_n),
@@ -56,7 +52,7 @@ module RISCV_Single_Cycle(
         .read_data2(ReadData2)
     );
     
-    // DMEM
+    // DMEM - Must be 256 words for sc2
     DMEM DMEM_inst (
         .clk(clk),
         .mem_write(MemWrite),
@@ -65,7 +61,7 @@ module RISCV_Single_Cycle(
         .read_data(ReadDataMem)
     );
     
-    // Control Unit
+    // Control Unit - Updated for full instruction support
     ControlUnit control (
         .opcode(Instruction[6:0]),
         .funct3(Instruction[14:12]),
@@ -78,7 +74,7 @@ module RISCV_Single_Cycle(
         .ALUControl(ALUControl)
     );
     
-    // ALU
+    // ALU - Supports all operations
     ALU alu (
         .a(ReadData1),
         .b(ALUSrc ? ImmExt : ReadData2),
@@ -87,17 +83,16 @@ module RISCV_Single_Cycle(
         .zero(Zero)
     );
     
-    // Immediate Generator
+    // Immediate Generator - Handles all formats
     ImmGenerator imm_gen (
         .inst(Instruction),
         .imm(ImmExt)
     );
     
-    // Writeback Mux
+    // Writeback Mux - Critical for JAL/JALR
     wire [31:0] WriteBackData;
     assign WriteBackData = (ResultSrc == 2'b00) ? ALUResult :
                           (ResultSrc == 2'b01) ? ReadDataMem : 
                           (ResultSrc == 2'b10) ? (PC + 4) : 
                           32'b0;
-    
 endmodule

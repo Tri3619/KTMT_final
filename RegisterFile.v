@@ -12,18 +12,15 @@ module RegisterFile (
     reg [31:0] registers [0:31];
 
     integer i;
-    // Reset logic
     always @(posedge clk or negedge rst_n) begin
         if (!rst_n) begin
-            for (i = 0; i < 32; i = i + 1) begin
-                registers[i] <= 32'h0;
-            end
+            for (i = 0; i < 32; i = i + 1)
+                registers[i] <= 0;
         end
-        else if (reg_write && (write_reg != 0)) begin
+        else if (reg_write && write_reg != 0)
             registers[write_reg] <= write_data;
-        end
     end
 
-    assign read_data1 = (read_reg1 == 0) ? 32'h0 : registers[read_reg1];
-    assign read_data2 = (read_reg2 == 0) ? 32'h0 : registers[read_reg2];
+    assign read_data1 = (read_reg1 == 0) ? 0 : registers[read_reg1];
+    assign read_data2 = (read_reg2 == 0) ? 0 : registers[read_reg2];
 endmodule
