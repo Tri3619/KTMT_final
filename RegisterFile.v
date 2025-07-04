@@ -1,26 +1,23 @@
 module RegisterFile (
     input clk,
     input rst_n,
-    input reg_write,
-    input [4:0] read_reg1,
-    input [4:0] read_reg2,
-    input [4:0] write_reg,
-    input [31:0] write_data,
-    output [31:0] read_data1,
-    output [31:0] read_data2
+    input [4:0] addA, addB, addD,
+    input [31:0] WB_out,
+    input RegWrite,
+    output [31:0] dataA, dataB,
+    output reg [31:0] registers [0:31] // Khai báo registers là cổng đầu ra kiểu reg
 );
-    reg [31:0] registers [0:31];
-
-    integer i;
     always @(posedge clk or negedge rst_n) begin
         if (!rst_n) begin
-            for (i = 0; i < 32; i = i + 1)
-                registers[i] <= 0;
+            for (int i = 0; i < 32; i++) begin
+                registers[i] <= 32'b0;
+            end
         end
-        else if (reg_write && write_reg != 0)
-            registers[write_reg] <= write_data;
+        else if (RegWrite && addD != 0) begin
+            registers[addD] <= WB_out;
+        end
     end
 
-    assign read_data1 = (read_reg1 == 0) ? 0 : registers[read_reg1];
-    assign read_data2 = (read_reg2 == 0) ? 0 : registers[read_reg2];
+    assign dataA = registers[addA];
+    assign dataB = registers[addB];
 endmodule
