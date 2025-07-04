@@ -1,6 +1,9 @@
 module ControlUnit (
     input [6:0] op,
+    input [2:0] funct3, // Thêm funct3 để kiểm tra ebreak/ecall
+    input [11:0] imm,   // Thêm imm để phân biệt ebreak/ecall
     output RegWrite, ALUSrc, ALUSrc_pc, MemWrite, MemRead, Branch, Jump,
+    output Halt,        // Thêm tín hiệu Halt cho ebreak/ecall
     output [1:0] ALUOp,
     output [1:0] ResultSrc,
     output reg [2:0] imm_sel
@@ -10,7 +13,7 @@ module ControlUnit (
                        op == 7'b1100111) ? 1'b1 : 1'b0;
     assign ALUSrc = (op == 7'b0000011 || op == 7'b0100011 || op == 7'b0010011 || 
                      op == 7'b1100111 || op == 7'b1101111 || op == 7'b1100011) ? 1'b1 : 1'b0;
-    assign ALUSrc_pc = (op == 7'b1100011 || op == 7'b1101111 || op == 7'b0010111) ? 1'b1 : 1'b0; // Thêm AUIPC
+    assign ALUSrc_pc = (op == 7'b1100011 || op == 7'b1101111 || op == 7'b0010111) ? 1'b1 : 1'b0;
     assign MemWrite = (op == 7'b0100011) ? 1'b1 : 1'b0;
     assign MemRead = (op == 7'b0000011) ? 1'b1 : 1'b0;
     assign ResultSrc = (op == 7'b0000011) ? 2'b01 : // Load
@@ -20,7 +23,8 @@ module ControlUnit (
     assign Jump = (op == 7'b1101111 || op == 7'b1100111) ? 1'b1 : 1'b0;
     assign ALUOp = (op == 7'b0110011 || op == 7'b0010011) ? 2'b10 : 
                    (op == 7'b1100011) ? 2'b01 : 
-                   2'b00; // JAL, JALR, AUIPC dùng ADD
+                   2'b00;
+    assign Halt = (op == 7'b1110011 && funct3 == 3'b000 && (imm == 12'h000 || imm == 12'h001)) ? 1'b1 : 1'b0; // ebreak hoặc ecall
 
     always @(*) begin
         case (op)

@@ -68,8 +68,8 @@ module RISCV_Single_Cycle (
 
     ControlUnit ControlUnit_inst (
         .op(op),
-        .funct3(funct3), // Added funct3
-        .imm(imm),       // Added imm
+        .funct3(funct3),
+        .imm(imm),
         .RegWrite(RegWrite),
         .ALUSrc(ALUSrc),
         .ALUSrc_pc(ALUSrc_pc),
@@ -78,7 +78,7 @@ module RISCV_Single_Cycle (
         .ResultSrc(ResultSrc),
         .Branch(Branch),
         .Jump(Jump),
-        .Halt(Halt),     // Added Halt
+        .Halt(Halt),
         .ALUOp(ALUOp),
         .imm_sel(imm_sel)
     );
@@ -133,7 +133,7 @@ module RISCV_Single_Cycle (
         .write_data(dataB),
         .funct3(funct3),
         .read_data(read_data)
-    );
+    );  
 
     MUX2 muxALU1 (
         .input0(dataA),
