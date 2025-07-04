@@ -10,16 +10,17 @@ module ALU (
     
     always @(*) begin
         case (alu_control)
-            3'b000: result = a + b;       // ADD
-            3'b001: result = a << b[4:0]; // SLL
-            3'b010: result = a_signed < b_signed; // SLT
-            3'b011: result = a < b;       // SLTU
-            3'b100: result = a ^ b;       // XOR
-            3'b101: result = a >> b[4:0]; // SRL/SRA
-            3'b110: result = a | b;       // OR
-            3'b111: result = b;           // AND/LUI
+            3'b000: result = a + b;                     // ADD
+            3'b001: result = a - b;                     // SUB/BEQ
+            3'b010: result = a & b;                     // AND
+            3'b011: result = a | b;                     // OR
+            3'b100: result = a ^ b;                     // XOR
+            3'b101: result = a << b[4:0];               // SLL
+            3'b110: result = a >> b[4:0];               // SRL
+            3'b111: result = a_signed >>> b[4:0];       // SRA
         endcase
     end
     
+    // Zero flag for BEQ/BNE
     assign zero = (result == 0);
 endmodule
