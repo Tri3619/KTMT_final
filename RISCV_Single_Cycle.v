@@ -2,60 +2,21 @@ module RISCV_Single_Cycle(
     input clk,
     input rst_n
 );
-    // Testbench interface signals
+    // Testbench interface
     output [31:0] PC_out_top;
     output [31:0] Instruction_out_top;
     
-    // Pipeline registers
+    // PC Logic
     reg [31:0] PC;
-    wire [31:0] PC_next;
+    wire [31:0] PC_next = PC + ((Branch & Zero) || Jump ? ImmExt : 4);
     
-    // Datapath signals
-    wire [31:0] Instruction;
-    wire [31:0] ReadData1, ReadData2;
-    wire [31:0] ALUResult;
-    wire [31:0] ReadDataMem;
-    wire [31:0] ImmExt;
-    wire MemWrite, RegWrite, ALUSrc, Branch, Jump;
-    wire [1:0] ResultSrc;
-    wire [2:0] ALUControl;
-    wire Zero;
-    wire PCSrc;
-
-    // Assign testbench outputs
-    assign PC_out_top = PC;
-    assign Instruction_out_top = Instruction;
-    
-    // PC Update Logic - FIXED for sc2 timing
-    assign PCSrc = (Branch & Zero) | Jump;
-    assign PC_next = PCSrc ? (PC + ImmExt) : (PC + 4);
-    
-    always @(posedge clk or negedge rst_n) begin
-        if (!rst_n) PC <= 32'h0;
+    always @(posedge clk or negedge rst_n)
+        if (!rst_n) PC <= 0;
         else PC <= PC_next;
-    end
     
-    // Instruction Memory - Initialized to 'x' for sc1
-    IMEM IMEM_inst (
-        .address(PC),
-        .instruction(Instruction)
-    );
-    
-    // Register File - x0 hardwired to 0
-    RegisterFile Reg_inst (
-        .clk(clk),
-        .rst_n(rst_n),
-        .reg_write(RegWrite),
-        .read_reg1(Instruction[19:15]),
-        .read_reg2(Instruction[24:20]),
-        .write_reg(Instruction[11:7]),
-        .write_data(WriteBackData),
-        .read_data1(ReadData1),
-        .read_data2(ReadData2)
-    );
-    
-    // Data Memory - 256 words for sc2
-    DMEM DMEM_inst (
+    // Memory
+    IMEM IMEM_inst(.address(PC), .instruction(Instruction_out_top));
+    DMEM DMEM_inst(
         .clk(clk),
         .mem_write(MemWrite),
         .address(ALUResult),
@@ -63,11 +24,32 @@ module RISCV_Single_Cycle(
         .read_data(ReadDataMem)
     );
     
-    // Control Unit - Enhanced for sc2
-    ControlUnit control (
-        .opcode(Instruction[6:0]),
-        .funct3(Instruction[14:12]),
-        .funct7(Instruction[31:25]),
+    // Register File
+    RegisterFile RF(
+        .clk(clk),
+        .rst_n(rst_n),
+        .reg_write(RegWrite),
+        .read_reg1(Instruction_out_top[19:15]),
+        .read_reg2(Instruction_out_top[24:20]),
+        .write_reg(Instruction_out_top[11:7]),
+        .write_data(WriteBackData),
+        .read_data1(ReadData1),
+        .read_data2(ReadData2)
+    );
+    
+    // ALU
+    ALU alu(
+        .a(ReadData1),
+        .b(ALUSrc ? ImmExt : ReadData2),
+        .alu_control(ALUControl),
+        .result(ALUResult),
+        .zero(Zero)
+    );
+    
+    // Control Unit
+    ControlUnit CU(
+        .opcode(Instruction_out_top[6:0]),
+        .funct3(Instruction_out_top[14:12]),
         .RegWrite(RegWrite),
         .MemWrite(MemWrite),
         .ALUSrc(ALUSrc),
@@ -77,25 +59,17 @@ module RISCV_Single_Cycle(
         .ALUControl(ALUControl)
     );
     
-    // ALU - Fixed for sc2 comparisons
-    ALU alu (
-        .a(ReadData1),
-        .b(ALUSrc ? ImmExt : ReadData2),
-        .alu_control(ALUControl),
-        .result(ALUResult),
-        .zero(Zero)
-    );
-    
-    // Immediate Generator - All formats
-    ImmGenerator imm_gen (
-        .inst(Instruction),
+    // Immediate Generator
+    ImmGenerator imm_gen(
+        .inst(Instruction_out_top),
         .imm(ImmExt)
     );
     
-    // Writeback Mux - Critical for JALR
-    wire [31:0] WriteBackData;
-    assign WriteBackData = (ResultSrc == 2'b00) ? ALUResult :
-                          (ResultSrc == 2'b01) ? ReadDataMem : 
-                          (ResultSrc == 2'b10) ? (PC + 4) : 
-                          32'b0;
+    // Writeback Mux
+    assign WriteBackData = 
+        (ResultSrc == 0) ? ALUResult :
+        (ResultSrc == 1) ? ReadDataMem : 
+        (PC + 4);
+    
+    assign PC_out_top = PC;
 endmodule
