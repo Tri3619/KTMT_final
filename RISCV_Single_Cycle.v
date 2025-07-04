@@ -8,6 +8,7 @@ module RISCV_Single_Cycle (
     wire [6:0] op;
     wire [2:0] funct3;
     wire [6:0] funct7;
+    wire [11:0] imm; // Added for ebreak/ecall
     wire [4:0] rs1, rs2, rd;
     wire [31:0] imm_ext;
     wire [31:0] PC_plus4, PC_branch, next_PC, PC_Out;
@@ -16,7 +17,7 @@ module RISCV_Single_Cycle (
     wire [31:0] alu_out;
     wire [31:0] read_data;
     wire [31:0] WB_out;
-    wire ALUSrc, ALUSrc_pc, MemWrite, MemRead, RegWrite, Branch, branch_taken, Jump;
+    wire ALUSrc, ALUSrc_pc, MemWrite, MemRead, RegWrite, Branch, branch_taken, Jump, Halt;
     wire [1:0] ResultSrc;
     wire [1:0] ALUOp;
     wire [2:0] imm_sel;
@@ -27,7 +28,8 @@ module RISCV_Single_Cycle (
     assign funct3 = instruction[14:12];
     assign funct7 = instruction[31:25];
     assign op = instruction[6:0];
-    assign Instruction_out_top = instruction;
+    assign imm = instruction[31:20]; // Extract imm field for ebreak/ecall
+    assign Instruction_out_top = Halt ? 32'hxxxxxxxx : instruction; // Output xxxxxxxx when halted
     assign PC_out_top = PC_Out;
 
     PC PC_inst (
@@ -66,6 +68,8 @@ module RISCV_Single_Cycle (
 
     ControlUnit ControlUnit_inst (
         .op(op),
+        .funct3(funct3), // Added funct3
+        .imm(imm),       // Added imm
         .RegWrite(RegWrite),
         .ALUSrc(ALUSrc),
         .ALUSrc_pc(ALUSrc_pc),
@@ -74,6 +78,7 @@ module RISCV_Single_Cycle (
         .ResultSrc(ResultSrc),
         .Branch(Branch),
         .Jump(Jump),
+        .Halt(Halt),     // Added Halt
         .ALUOp(ALUOp),
         .imm_sel(imm_sel)
     );
@@ -123,9 +128,11 @@ module RISCV_Single_Cycle (
     DMEM DMEM_inst (
         .clk(clk),
         .MemWrite(MemWrite),
+        .MemRead(MemRead),
         .address(alu_out),
         .write_data(dataB),
-        .read_data(read_data) // Fixed typo from manaread_data to read_data
+        .funct3(funct3),
+        .read_data(read_data)
     );
 
     MUX2 muxALU1 (
