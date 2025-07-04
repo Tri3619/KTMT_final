@@ -2,11 +2,11 @@ module RISCV_Single_Cycle(
     input clk,
     input rst_n
 );
-    // Tín hiệu mới cần thêm cho testbench
+    // Tín hiệu output cho testbench
     output [31:0] PC_out_top;
     output [31:0] Instruction_out_top;
     
-    // Các tín hiện nội bộ
+    // Các tín hiệu nội bộ
     reg [31:0] PC_reg;
     wire [31:0] PC;
     wire [31:0] PC_next;
@@ -18,9 +18,9 @@ module RISCV_Single_Cycle(
     wire MemWrite, RegWrite, ALUSrc, Branch, Jump;
     wire [1:0] ResultSrc;
     wire [2:0] ALUControl;
+    wire Zero;
     
-<<<<<<< HEAD
-    // Gán tín hiệu output cho testbench
+    // Gán tín hiệu output
     assign PC_out_top = PC;
     assign Instruction_out_top = Instruction;
     
@@ -29,50 +29,15 @@ module RISCV_Single_Cycle(
     assign PC_next = (Branch & Zero) ? (PC + ImmExt) : 
                    Jump ? (PC + ImmExt) : 
                    (PC + 4);
-=======
-    // Control signals
-    wire        PCSrc;
-    wire        RegWrite;
-    wire        ALUSrc;
-    wire        MemWrite;
-    wire        MemtoReg;
-    wire        Branch;
-    wire        Jump;
-    wire [1:0]  ALUOp;
-    wire [3:0]  ALUControl;
-    wire        Zero;
-    wire [31:0] imem_memory [0:1023];
-    wire [31:0] dmem_memory [0:1023];
-    // Testbench signals
-    reg  [31:0] Instruction_out_top;
->>>>>>> 3c902f98d32c2b187d33f5dbcd2306833dc21240
     
     always @(posedge clk or negedge rst_n) begin
         if (!rst_n) PC_reg <= 32'h0;
         else PC_reg <= PC_next;
     end
     
-<<<<<<< HEAD
     // IMEM
     IMEM IMEM_inst (
         .address(PC),
-=======
-    assign PCPlus4 = PC + 4;
-    assign PCSrc = Branch & Zero;
-    assign PCNext = Jump ? (PC + ImmExt) : 
-                   PCSrc ? PCBranch : 
-                   PCPlus4;
-    assign PCBranch = PC + ImmExt;
-    
-    // Instruction Memory
-    // IMEM imem(
-    //     .addr(PC),
-    //     .instruction(Instruction),
-    //     .memory(imem_memory)
-    // );
-    IMEM IMEM_inst (  // Đổi tên thành IMEM_inst
-        .addr(PC),
->>>>>>> 3c902f98d32c2b187d33f5dbcd2306833dc21240
         .instruction(Instruction)
     );
     
@@ -120,28 +85,10 @@ module RISCV_Single_Cycle(
         .zero(Zero)
     );
     
-<<<<<<< HEAD
-    // Immediate Extender (sử dụng module của bạn)
-    ImmExtend imm_ext (
+    // Immediate Generator
+    ImmGenerator imm_gen (
         .inst(Instruction),
         .imm(ImmExt)
-=======
-    // Data Memory
-    // DMEM dmem(
-    //     .clk(clk),
-    //     .we(MemWrite),
-    //     .addr(ALUResult),
-    //     .wd(ReadData2),
-    //     .rd(ReadData),
-    //     .memory(dmem_memory)
-    // );
-        DMEM DMEM_inst (  // Đổi tên thành DMEM_inst
-        .clk(clk),
-        .we(MemWrite),
-        .addr(ALUResult),
-        .wd(ReadData2),
-        .rd(ReadData)
->>>>>>> 3c902f98d32c2b187d33f5dbcd2306833dc21240
     );
     
     // Writeback Mux
@@ -151,20 +98,4 @@ module RISCV_Single_Cycle(
                           (ResultSrc == 2'b10) ? (PC + 4) : 
                           32'b0;
     
-<<<<<<< HEAD
 endmodule
-=======
-    // Program termination detection
-    always @(posedge clk) begin
-        if (Instruction === 32'h00000000 || 
-            Instruction === 32'h00000073 || // ECALL
-            Instruction === 32'h00100073)   // EBREAK
-        begin
-            Instruction_out_top <= 32'hxxxxxxxx;
-        end
-        else begin
-            Instruction_out_top <= Instruction;
-        end
-    end
-endmodule
->>>>>>> 3c902f98d32c2b187d33f5dbcd2306833dc21240

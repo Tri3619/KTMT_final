@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 module ControlUnit (
     input [6:0] opcode,
     input [2:0] funct3,
@@ -9,18 +8,6 @@ module ControlUnit (
     output reg Branch,
     output reg Jump,
     output reg [2:0] ALUControl
-=======
-// Control Unit
-module ControlUnit(
-    input  [6:0] opcode,
-    output reg       RegWrite,
-    output reg       ALUSrc,
-    output reg       MemWrite,
-    output reg       MemtoReg,
-    output reg       Branch,
-    output reg       Jump,
-    output reg [1:0] ALUOp
->>>>>>> 3c902f98d32c2b187d33f5dbcd2306833dc21240
 );
     always @(*) begin
         // Default values
@@ -52,9 +39,12 @@ module ControlUnit(
             7'b0110011: begin
                 RegWrite = 1'b1;
                 case (funct3)
-                    3'b000: ALUControl = funct7[5] ? 3'b001 : 3'b000; // ADD/SUB
-                    3'b111: ALUControl = 3'b010; // AND
+                    3'b000: ALUControl = 3'b000; // ADD
+                    3'b001: ALUControl = 3'b000; // SLLI (not implemented)
+                    3'b010: ALUControl = 3'b000; // SLT (not implemented)
+                    3'b100: ALUControl = 3'b010; // XOR (not implemented)
                     3'b110: ALUControl = 3'b011; // OR
+                    3'b111: ALUControl = 3'b010; // AND
                     default: ALUControl = 3'b000;
                 endcase
             end
