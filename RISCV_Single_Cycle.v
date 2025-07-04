@@ -2,11 +2,11 @@ module RISCV_Single_Cycle(
     input clk,
     input rst_n
 );
-    // Tín hiệu output cho testbench
+    // Outputs for testbench
     output [31:0] PC_out_top;
     output [31:0] Instruction_out_top;
     
-    // Các tín hiệu nội bộ
+    // Internal signals
     reg [31:0] PC_reg;
     wire [31:0] PC;
     wire [31:0] PC_next;
@@ -19,16 +19,16 @@ module RISCV_Single_Cycle(
     wire [1:0] ResultSrc;
     wire [2:0] ALUControl;
     wire Zero;
+    wire PCSrc;
     
-    // Gán tín hiệu output
+    // Assign outputs
     assign PC_out_top = PC;
     assign Instruction_out_top = Instruction;
     
-    // PC logic - QUAN TRỌNG: Sửa lại cho branch và jump
+    // PC logic
     assign PC = PC_reg;
-    assign PC_next = (Branch & Zero) ? (PC + ImmExt) : 
-                   Jump ? (PC + ImmExt) : 
-                   (PC + 4);
+    assign PCSrc = Branch & Zero;
+    assign PC_next = (PCSrc | Jump) ? (PC + ImmExt) : (PC + 4);
     
     always @(posedge clk or negedge rst_n) begin
         if (!rst_n) 

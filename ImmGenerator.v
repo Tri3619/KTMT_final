@@ -4,27 +4,24 @@ module ImmGenerator(
 );
     always @(*) begin
         case (inst[6:0])
-            // I-type
+            // I-type: ADDI, ANDI, ORI, XORI, JALR, Loads
             7'b0010011, 7'b0000011, 7'b1100111: 
                 imm = {{20{inst[31]}}, inst[31:20]};
             
-            // S-type
+            // S-type: Stores
             7'b0100011: 
                 imm = {{20{inst[31]}}, inst[31:25], inst[11:7]};
             
-            // B-type
+            // B-type: Branches
             7'b1100011: 
                 imm = {{20{inst[31]}}, inst[7], inst[30:25], inst[11:8], 1'b0};
             
-            // J-type
+            // J-type: JAL
             7'b1101111: 
                 imm = {{12{inst[31]}}, inst[19:12], inst[20], inst[30:21], 1'b0};
             
-            // U-type
-            7'b0110111: // LUI
-                imm = {inst[31:12], 12'b0};
-            
-            7'b0010111: // AUIPC
+            // U-type: LUI, AUIPC
+            7'b0110111, 7'b0010111: 
                 imm = {inst[31:12], 12'b0};
             
             default: 

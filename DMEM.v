@@ -5,7 +5,7 @@ module DMEM (
     input [31:0] write_data,
     output reg [31:0] read_data
 );
-    // 256 words memory (1KB)
+    // 256 words memory
     reg [31:0] memory [0:255];
     
     // Initialize all memory to 0
@@ -18,7 +18,6 @@ module DMEM (
 
     always @(posedge clk) begin
         if (mem_write) begin
-            // Chỉ ghi khi địa chỉ trong phạm vi
             if (address[31:2] < 256) begin
                 memory[address[31:2]] <= write_data;
             end

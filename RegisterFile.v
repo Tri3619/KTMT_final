@@ -19,12 +19,11 @@ module RegisterFile (
                 registers[i] <= 32'h0;
             end
         end
-        else if (reg_write && (write_reg != 0)) begin  // Không ghi vào x0
+        else if (reg_write && (write_reg != 0)) begin
             registers[write_reg] <= write_data;
         end
     end
 
-    // Luôn trả về 0 cho x0
     assign read_data1 = (read_reg1 == 0) ? 32'h0 : registers[read_reg1];
     assign read_data2 = (read_reg2 == 0) ? 32'h0 : registers[read_reg2];
 endmodule
