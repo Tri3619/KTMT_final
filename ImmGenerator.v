@@ -1,7 +1,6 @@
-// Immediate Generator
 module ImmGenerator(
     input  [31:0] inst,
-    output [31:0] imm
+    output reg [31:0] imm
 );
     always @(*) begin
         case (inst[6:0])
@@ -20,6 +19,10 @@ module ImmGenerator(
             // J-type
             7'b1101111: 
                 imm = {{12{inst[31]}}, inst[19:12], inst[20], inst[30:21], 1'b0};
+            
+            // U-type
+            7'b0110111, 7'b0010111: 
+                imm = {inst[31:12], 12'b0};
             
             default: 
                 imm = 32'b0;

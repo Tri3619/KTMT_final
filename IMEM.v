@@ -1,13 +1,19 @@
-// Instruction Memory
-module IMEM(
-    input  [31:0] addr,
-    output [31:0] instruction
+module IMEM (
+    input [31:0] address,
+    output reg [31:0] instruction
 );
-    reg [31:0] memory [0:1023]; // 1KB memory
-
+    // 1024 words memory
+    reg [31:0] memory [0:1023];
+    
+    // Initialize all memory to 'x'
     initial begin
-        $readmemh("./mem/imem.hex", memory);
+        for (int i = 0; i < 1024; i++) begin
+            memory[i] = 32'hxxxxxxxx;
+        end
     end
 
-    assign instruction = memory[addr[31:2]]; // Word-aligned access
+    always @(*) begin
+        // Convert byte address to word address
+        instruction = memory[address[31:2]];
+    end
 endmodule

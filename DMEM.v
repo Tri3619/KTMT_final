@@ -1,22 +1,29 @@
-// Data Memory
-module DMEM(
-    input         clk,
-    input         we,
-    input  [31:0] addr,
-    input  [31:0] wd,
-    output [31:0] rd
+module DMEM (
+    input clk,
+    input mem_write,
+    input [31:0] address,
+    input [31:0] write_data,
+    output reg [31:0] read_data,
+    output reg [31:0] memory [0:255]  // Sửa kích thước thành 256 words
 );
-    reg [31:0] memory [0:1023]; // 1KB memory
-
+    // Khởi tạo bộ nhớ
     initial begin
-        $readmemh("./mem/dmem_init.hex", memory);
+        for (int i = 0; i < 256; i++) begin
+            memory[i] = 32'h0;
+        end
     end
 
-    assign rd = memory[addr[31:2]]; // Word-aligned access
-
     always @(posedge clk) begin
-        if (we) begin
-            memory[addr[31:2]] <= wd;
+        if (mem_write && (address[31:2] < 256)) begin
+            memory[address[31:2]] <= write_data;
+        end
+    end
+
+    always @(*) begin
+        if (address[31:2] < 256) begin
+            read_data = memory[address[31:2]];
+        end else begin
+            read_data = 32'h0;
         end
     end
 endmodule
