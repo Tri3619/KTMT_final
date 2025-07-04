@@ -133,7 +133,7 @@ module RISCV_Single_Cycle (
         .write_data(dataB),
         .funct3(funct3),
         .read_data(read_data)
-    );  
+    ); 
 
     MUX2 muxALU1 (
         .input0(dataA),

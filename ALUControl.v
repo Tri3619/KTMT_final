@@ -13,7 +13,7 @@ module ALUControl (
             2'b01: ALUControl = 4'b0001; // SUB
             2'b10: begin
                 case (funct3)
-                    3'b000: ALUControl = RtypeSub ? 4'b0001 : (RtypeMul ? 4'b1010 : 4'b0000); // ADD/SUB/MUL
+                    3'b000: ALUControl = RtypeSub ? 4'b0001 : (RtypeMul ? 4'b101 | 4'b0000); // ADD/SUB/MUL
                     3'b001: ALUControl = 4'b0101; // SLL
                     3'b010: ALUControl = 4'b1000; // SLT
                     3'b011: ALUControl = 4'b1001; // SLTU
