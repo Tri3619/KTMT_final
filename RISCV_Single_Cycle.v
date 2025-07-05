@@ -31,10 +31,7 @@ module RISCV_Single_Cycle (
     assign imm = instruction[31:20]; // Gán imm cho ebreak/ecall
     assign Instruction_out_top = Halt ? 32'hxxxxxxxx : instruction; // Dừng khi Halt = 1
     assign PC_out_top = PC_Out;
-    assign PC_next = (Halt) ? PC_out : // Dừng PC khi Halt
-                (Jump && (op == 7'b1100111)) ? alu_out : // JALR
-                (Jump || (Branch && branch_taken)) ? PC_branch : // JAL or Branch
-                PC_plus4; // Default
+
     PC PC_inst (
         .clk(clk),
         .rst_n(rst_n),

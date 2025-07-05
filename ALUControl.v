@@ -6,14 +6,14 @@ module ALUControl (
     output reg [3:0] ALUControl
 );
     wire RtypeSub = (op == 7'b0110011 && funct3 == 3'b000 && funct7[5]) ? 1'b1 : 1'b0;
-    wire RtypeMul = (op == 7'b0110011 && funct3 == 3'b000 && funct7 == 7'b0000001) ? 1'b1 : 1'b0;
+    wire RtypeMul = (op == 7'b0110011 && funct3 == 3'b000 && funct7 == 7'b0000001) ? 1'b1 : 1'b0; // MUL
     always @(*) begin
         case (ALUOp)
             2'b00: ALUControl = 4'b0000; // ADD
             2'b01: ALUControl = 4'b0001; // SUB
             2'b10: begin
                 case (funct3)
-                    3'b000: ALUControl = RtypeSub ? 4'b0001 : (RtypeMul ? 4'b1010 : 4'b0000); // ADD/SUB/MUL
+                    3'b000: ALUControl = RtypeSub ? 4'b0001 : (RtypeMul ? 4'b101 | 4'b0000); // ADD/SUB/MUL
                     3'b001: ALUControl = 4'b0101; // SLL
                     3'b010: ALUControl = 4'b1000; // SLT
                     3'b011: ALUControl = 4'b1001; // SLTU

@@ -24,7 +24,7 @@ module ControlUnit (
     assign ALUOp = (op == 7'b0110011 || op == 7'b0010011) ? 2'b10 : 
                    (op == 7'b1100011) ? 2'b01 : 
                    2'b00;
-    assign Halt = (op == 7'b1110011 && funct3 == 3'b000 && (imm[11:0] == 12'h001 || imm[11:0] == 12'h000)) ? 1'b1 : 1'b0;
+    assign Halt = (op == 7'b1110011 && funct3 == 3'b000 && (imm == 12'h000 || imm == 12'h001)) ? 1'b1 : 1'b0;
 
     always @(*) begin
         case (op)
