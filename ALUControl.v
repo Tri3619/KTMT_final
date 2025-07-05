@@ -6,7 +6,7 @@ module ALUControl (
     output reg [3:0] ALUControl
 );
     wire RtypeSub = (op == 7'b0110011 && funct3 == 3'b000 && funct7[5]) ? 1'b1 : 1'b0;
-    wire RtypeMul = (op == 7'b0110011 && funct3 == 3'b000 && funct7 == 7'b0000001) ? 1'b1 : 1'b0; // MUL
+    wire RtypeMul = (op == 7'b0110011 && funct3 == 3'b000 && funct7 == 7'b0000001) ? 1'b1 : 1'b0;
     always @(*) begin
         case (ALUOp)
             2'b00: ALUControl = 4'b0000; // ADD
