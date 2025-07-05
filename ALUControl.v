@@ -17,7 +17,7 @@ module ALUControl (
                     3'b000: ALUControl = RtypeSub ? 4'b0001 : (RtypeMul ? 4'b1010 : 4'b0000);
                     3'b001: ALUControl = 4'b0101; // SLL
                     3'b010: ALUControl = 4'b1000; // SLT
-                    3'b011: ALUControl = 4'b1009; // SLTU
+                    3'b011: ALUControl = 4'b1001; // SLTU
                     3'b100: ALUControl = 4'b0100; // XOR
                     3'b101: ALUControl = funct7[5] ? 4'b0111 : 4'b0110; // SRA/SRL
                     3'b110: ALUControl = 4'b0011; // OR
