@@ -8,6 +8,6 @@ module PC (
         if (!rst_n)
             PC_Out <= 32'b0;
         else
-            PC_Out <= next_PC & 32'hFFFFFFFC;
+            PC_Out <= next_PC; // Bỏ mask để xử lý địa chỉ không căn chỉnh
     end
 endmodule

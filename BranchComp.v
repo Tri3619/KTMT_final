@@ -6,7 +6,7 @@ module BranchComp (
 );
     always @(*) begin
         branch_taken = 1'b0;
-        if (op == 7'b1100011) begin
+        if (op == 7'b1100011) begin // Chỉ xử lý khi là lệnh nhánh
             case (funct3)
                 3'b000: branch_taken = (rs1_data == rs2_data); // BEQ
                 3'b001: branch_taken = (rs1_data != rs2_data); // BNE
