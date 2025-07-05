@@ -1,9 +1,9 @@
 module ControlUnit (
     input [6:0] op,
-    input [2:0] funct3, // Thêm để kiểm tra ebreak/ecall
-    input [11:0] imm,   // Thêm để phân biệt ebreak/ecall
+    input [2:0] funct3,
+    input [11:0] imm,
     output RegWrite, ALUSrc, ALUSrc_pc, MemWrite, MemRead, Branch, Jump,
-    output Halt,        // Thêm tín hiệu Halt cho ebreak/ecall
+    output Halt,
     output [1:0] ALUOp,
     output [1:0] ResultSrc,
     output reg [2:0] imm_sel
@@ -24,7 +24,7 @@ module ControlUnit (
     assign ALUOp = (op == 7'b0110011 || op == 7'b0010011) ? 2'b10 : 
                    (op == 7'b1100011) ? 2'b01 : 
                    2'b00;
-    assign Halt = (op == 7'b1110011 && funct3 == 3'b000 && (imm == 12'h000 || imm == 12'h001)) ? 1'b1 : 1'b0; // ebreak hoặc ecall
+    assign Halt = (op == 7'b1110011 && funct3 == 3'b000 && (imm == 12'h000 || imm == 12'h001)) ? 1'b1 : 1'b0;
 
     always @(*) begin
         case (op)

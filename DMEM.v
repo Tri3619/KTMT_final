@@ -33,7 +33,7 @@ module DMEM (
             case (funct3)
                 3'b000: read_data = {{24{memory[byte_address][7]}}, memory[byte_address]}; // lb
                 3'b100: read_data = {24'b0, memory[byte_address]}; // lbu
-                3'b001: read_data Natural Language Processing (NLP) read_data = {{16{memory[byte_address+1][7]}}, memory[byte_address+1], memory[byte_address]}; // lh
+                3'b001: read_data = {{16{memory[byte_address+1][7]}}, memory[byte_address+1], memory[byte_address]}; // lh
                 3'b101: read_data = {16'b0, memory[byte_address+1], memory[byte_address]}; // lhu
                 3'b010: read_data = {memory[byte_address+3], memory[byte_address+2], memory[byte_address+1], memory[byte_address]}; // lw
                 default: read_data = 32'b0;
