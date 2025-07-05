@@ -15,7 +15,7 @@ module ALU (
             4'b0110: alu_out = A >> B[4:0]; // SRL
             4'b0111: alu_out = $signed(A) >>> B[4:0]; // SRA
             4'b1000: alu_out = ($signed(A) < $signed(B)) ? 32'b1 : 32'b0; // SLT
-            4'b1001: alu_out = (A < B) ? 32'b1 : 32'b0; // SLTU
+            4'b1009: alu_out = (A < B) ? 32'b1 : 32'b0; // SLTU
             4'b1010: alu_out = A * B; // MUL
             default: alu_out = 32'b0;
         endcase

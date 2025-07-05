@@ -8,7 +8,7 @@ module RISCV_Single_Cycle (
     wire [6:0] op;
     wire [2:0] funct3;
     wire [6:0] funct7;
-    wire [11:0] imm; // Added for ebreak/ecall
+    wire [11:0] imm; // Thêm để truyền vào ControlUnit
     wire [4:0] rs1, rs2, rd;
     wire [31:0] imm_ext;
     wire [31:0] PC_plus4, PC_branch, next_PC, PC_Out;
@@ -28,8 +28,8 @@ module RISCV_Single_Cycle (
     assign funct3 = instruction[14:12];
     assign funct7 = instruction[31:25];
     assign op = instruction[6:0];
-    assign imm = instruction[31:20]; // Extract imm field for ebreak/ecall
-    assign Instruction_out_top = Halt ? 32'hxxxxxxxx : instruction; // Output xxxxxxxx when halted
+    assign imm = instruction[31:20]; // Gán imm cho ebreak/ecall
+    assign Instruction_out_top = Halt ? 32'hxxxxxxxx : instruction; // Dừng khi Halt = 1
     assign PC_out_top = PC_Out;
 
     PC PC_inst (
